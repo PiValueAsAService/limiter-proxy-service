@@ -1,0 +1,76 @@
+openapi: 3.0.2
+info:
+  title: API v1
+  version: '1.0'
+  description: API сервиса для лимитирования запросов на вычисление числа Пи
+servers:
+- url: http://{host}:{port}/api/v1
+  variables:
+    host:
+      default: 127.0.0.1
+    port:
+      default: '3118'
+components:
+  schemas:
+    error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Статус ответа
+        code:
+          type: string
+          description: Код ошибки
+        error:
+          type: string
+          description: Сообщение об ошибке
+        message:
+          type: string
+          description: Причина ошибки
+      required:
+      - error
+      description: Ошибка
+paths:
+  "/pi":
+    parameters:
+    - in: query
+      name: size
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100000
+      required: true
+      description: Количество знаков после запятой в числе Пи
+      example: 2
+    get:
+      description: Получаем форму отправки CSV файлов
+      tags:
+      - pi
+      responses:
+        '200':
+          description: Число Пи успешно вычислено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: Значение числа Пи
+              examples:
+                Success:
+                  value:
+                    value: '3,14'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/error"
+              examples:
+                BadRequest:
+                  value:
+                    statusCode: 400
+                    code: FST_ERR_VALIDATION
+                    error: Bad Request
+                    message: querystring must have required property 'size'
