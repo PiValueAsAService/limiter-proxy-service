@@ -12,6 +12,7 @@
   "dependencies": {
     "dotenv": "16.3.1",
     "fastify": "4.24.3",
-    "got": "14.0.0"
+    "got": "14.0.0",
+    "prom-client": "15.1.3"
   }
 }

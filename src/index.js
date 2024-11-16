@@ -2,6 +2,7 @@ import Fastify from 'fastify'
 import 'dotenv/config'
 import got from 'got'
 import url from 'url';
+import { collectDefaultMetrics, register } from 'prom-client';
 
 const config = {
     listen: {
@@ -20,6 +21,7 @@ const config = {
     }
 }
 
+collectDefaultMetrics();
 
 const fastify = Fastify({
     logger: true
@@ -64,6 +66,10 @@ fastify.get(
 fastify.get('/health', async (request, reply) => {
     reply.type('application/json').code(200)
     return { status: 'OK' }
+})
+fastify.get('/metrics', async (request, reply) => {
+    reply.type('application/json').code(200)
+    return await register.metrics()
 })
 
 fastify.listen({
